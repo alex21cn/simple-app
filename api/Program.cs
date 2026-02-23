@@ -39,7 +39,7 @@ builder.Services.AddSwaggerGen(options =>
     }
 
     // Add OAuth2 security definition for Microsoft Identity Platform
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("OAuth2", new OpenApiSecurityScheme
     {
         Type = SecuritySchemeType.OAuth2,
         In = ParameterLocation.Header,
@@ -67,7 +67,7 @@ builder.Services.AddSwaggerGen(options =>
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
-//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddEndpointsApiExplorer();
 
 // Authentication with Microsoft Identity Platform (JWT Bearer)
 
@@ -113,8 +113,20 @@ var app = builder.Build();
         //c.OAuthScopeSeparator(" ");
         options.OAuthScopes(scopes.Keys.ToArray());
     });
-    //app.MapOpenApi();
-}
+}    
+
+app.MapOpenApi();
+
+app.MapScalarApiReference(options =>
+{
+    options.Title = "My API";
+    options.Theme = Scalar.AspNetCore.ScalarTheme.DeepSpace;
+
+    // Scalar UI will detect the OAuth2 flows from the OpenAPI document exposed at /openapi
+    // If you need explicit UI OAuth config, check Scalar docs or the package's available APIs.
+
+    // options.SpecUrl = "/openapi/v1.json";
+});
 
 app.UseHttpsRedirection();
 
